@@ -35,8 +35,9 @@ app.register(fastifySwaggerUi, {
 });
 app.register(routes);
 
-app.listen({ port: 3333 }).then(() => {
-  console.log("app is running on http://localhost:3333");
+app.listen({
+  host: "0.0.0.0",
+  port: process.env.PORT ?? 3333,
 });
 
 // // // const database = new DatabaseMemory();
