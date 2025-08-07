@@ -37,7 +37,7 @@ app.register(routes);
 
 app.listen({
   host: "0.0.0.0",
-  port: process.env.PORT ?? 3333,
+  port: Number(process.env.PORT) || 3333,
 });
 
 // // // const database = new DatabaseMemory();
