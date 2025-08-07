@@ -13,11 +13,11 @@ GET http://localhost:3333/videos
 
 ###
 
-PUT http://localhost:3333/videos/170a700e-27f5-449c-b7f8-25c4d6e79e87
+PUT http://localhost:3333/videos/055edb5f-1ef2-4118-8275-9bb2c364feb0
 Content-Type: application/json
 
 {
-  "title": "Video 3",
+  "title": "Video novo",
   "description": "This is another video.",
   "duration": 240
 }
@@ -25,4 +25,4 @@ Content-Type: application/json
 
 ###
 
-DELETE  http://localhost:3333/videos/170a700e-27f5-449c-b7f8-25c4d6e79e87
+DELETE  http://localhost:3333/videos/055edb5f-1ef2-4118-8275-9bb2c364feb0
