@@ -1,0 +1,37 @@
+# Use a imagem oficial do Node.js como base
+FROM node:18-alpine AS builder
+
+# Defina o diretório de trabalho
+WORKDIR /app
+
+# Copie os arquivos de dependências
+COPY package.json pnpm-lock.yaml ./
+
+# Instale as dependências de produção
+RUN npm install -g pnpm && pnpm install --frozen-lockfile
+
+# Copie o restante do código da aplicação
+COPY . .
+
+# Compile o TypeScript para JavaScript
+RUN pnpm build
+
+# Use uma imagem mais leve para produção
+FROM node:18-alpine
+
+# Defina o diretório de trabalho
+WORKDIR /app
+
+# Copie apenas os arquivos necessários para rodar a aplicação
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+
+# Instale apenas as dependências de produção
+RUN npm install -g pnpm && pnpm install --prod
+
+# Exponha a porta que a aplicação irá rodar
+EXPOSE 3333
+
+# Comando para iniciar a aplicação
+CMD ["node", "dist/server.js"]

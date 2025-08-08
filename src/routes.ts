@@ -53,24 +53,35 @@ export async function routes(app: CustomFastifyInstance) {
         description: "Create a new user",
         tags: ["Users"], // Tag for categorizing the route in Swagger UI
         summary: "Create User", // Summary of the route
-        body: z.object({
-          name: z.string(), // Name of the user
-          email: z.string(), // Email of the user
-          password: z.string().min(6), // Password of the user, minimum length of 6 characters
-          age: z.number().int().optional(), // Age of the user, optional
-          isAdmin: z.boolean().default(false), // Admin status of the user, defaults to false
-        }),
+        body: {
+          type: "object",
+          required: ["name", "email", "password"], // Deve ser um array
+          properties: {
+            name: { type: "string" }, // Name of the user
+            email: { type: "string", format: "email" }, // Email of the user
+            password: { type: "string", minLength: 6 }, // Password of the user, minimum length of 6 characters
+            age: { type: "integer", minimum: 0 }, // Age of the user, optional
+            isAdmin: { type: "boolean", default: false }, // Admin status of the user, defaults to false
+          },
+        },
         response: {
-          201: z.object({
-            message: z.string(), // Response message when user is created successfully
-            id: z.string(), // ID of the created user
-          }),
+          201: {
+            type: "object",
+            properties: {
+              message: { type: "string" }, // Response message when user is created successfully
+              id: { type: "string" }, // ID of the created user
+            },
+          },
         },
       },
     },
     async (request, reply) => {
       const usuario = request.body;
+
+      // Criação do usuário no banco de dados
       const usuarioId = await database.create(usuario);
+
+      // Retorna a resposta de sucesso
       return reply.status(201).send({
         message: "User created successfully",
         id: usuarioId,

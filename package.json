@@ -22,7 +22,9 @@
     "dotenv": "^17.2.1",
     "fastify": "^5.4.0",
     "fastify-type-provider-zod": "^5.0.3",
-    "postgres": "^3.4.7"
+    "postgres": "^3.4.7",
+    "zod": "^4.0.15"
+
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",

@@ -1,130 +1,41 @@
-import { fastify } from "fastify";
-import { fastifyCors } from "@fastify/cors";
-
-import { fastifySwagger } from "@fastify/swagger";
+import Fastify from "fastify";
+import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
-import {
-  jsonSchemaTransform,
-  validatorCompiler,
-} from "fastify-type-provider-zod";
-import { serializerCompiler } from "fastify-type-provider-zod";
 import { routes } from "./routes.js";
-import { ZodTypeProvider } from "fastify-type-provider-zod";
 
-const app = fastify().withTypeProvider<ZodTypeProvider>();
+const app = Fastify();
 
-app.setValidatorCompiler(validatorCompiler);
-
-app.setSerializerCompiler(serializerCompiler);
-
-app.register(fastifyCors, {
-  origin: "*", // Allow all origins for CORS
-});
+// Configuração do Swagger
 app.register(fastifySwagger, {
-  openapi: {
+  swagger: {
     info: {
-      title: "Video API",
+      title: "Node API",
+      description: "Documentação da API",
       version: "1.0.0",
     },
   },
-  transform: jsonSchemaTransform,
 });
 
 app.register(fastifySwaggerUi, {
   routePrefix: "/docs",
+  staticCSP: true,
+  transformStaticCSP: (header) => header,
 });
+
+// Registre as rotas da aplicação
 app.register(routes);
 
-app.listen({
-  host: "0.0.0.0",
-  port: Number(process.env.PORT) || 3333,
-});
-
-// // // const database = new DatabaseMemory();
-// import { DatabasePostgres } from "./database/database-postgres.js";
-
-// const database = new DatabasePostgres();
-
-// app.post(
-//   "/users",
-//   {
-//     schema: {
-//       body: {
-//         type: "object",
-//         properties: {
-//           name: { type: "string" },
-//           email: { type: "string" },
-//           password: { type: "string" },
-//           age: { type: "number" },
-//           isAdmin: { type: "boolean" },
-//         },
-//         required: ["name", "email", "password", "age", "isAdmin"],
-//       },
-//     },
-//   },
-//   async (request, reply) => {
-//     const { name, email, password, age, isAdmin } = request.body as {
-//       name: string;
-//       email: string;
-//       password: string;
-//       age: number;
-//       isAdmin: boolean;
-//     };
-
-//     const usuarioId = await database.create({
-//       name,
-//       email,
-//       password,
-//       age,
-//       isAdmin,
-//     });
-
-//     return reply.status(200).send(usuarioId);
-//   }
-// );
-// app.post("/videos", async (request, reply) => {
-
-//     const {title,description,duration} = request.body;
-
-//     await database.create({
-//         title,
-//         description,
-//         duration,
-//     });
-
-//    return reply.status(201).send();
-
-// }
-// );
-// app.get("/videos/:id", async (request, reply) => {
-//     return { message: "Hello, World!" };
-// });
-// app.put("/videos/:id", async (request, reply) => {
-
-//     const id = request.params.id;
-
-//     const {title, description, duration} = request.body;
-
-//     // Update the video in the database
-//     await database.update(id, {
-//         title,
-//         description,
-//         duration
-//     });
-
-//     return reply.status(204).send();
-
-// });
-// app.delete("/videos/:id", async (request, reply) => {
-//     const id = request.params.id;
-
-//     await database.delete(id);
-
-//     return reply.status(204).send();
-// }
-// );
-
-// app.listen({
-//   host: "0.0.0.0",
-//   port: process.env.PORT ?? 3333,
-// });
+// Inicialização do servidor
+app.listen(
+  {
+    host: "0.0.0.0",
+    port: Number(process.env.PORT) || 3333,
+  },
+  (err, address) => {
+    if (err) {
+      console.error(err);
+      process.exit(1);
+    }
+    console.log(`Servidor rodando em ${address}`);
+  }
+);

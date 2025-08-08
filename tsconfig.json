@@ -12,5 +12,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "moduleResolution": "node16"
-  }
+  },
+  "include": ["src/**/*"], // Include all files in the 'src' folder
+  "exclude": ["node_modules", "dist"] // Exclude dependencies and build output
 }

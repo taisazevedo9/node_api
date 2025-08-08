@@ -55,3 +55,15 @@ src/
 ├── routes.ts                  # Rotas da aplicação
 └── server.ts                  # Configuração do servidor Fastify
 ```
+
+---
+
+## 🐳 Executando com Docker
+
+1. Certifique-se de que o Docker e o Docker Compose estão instalados no seu sistema.
+2. Construa e inicie os containers:
+   ```bash
+   docker-compose up --build
+   ```
+3. Acesse a aplicação em: [http://localhost:3333](http://localhost:3333)
+4. Documentação da API disponível em: [http://localhost:3333/docs](http://localhost:3333/docs)
