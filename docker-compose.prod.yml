@@ -1,17 +1,28 @@
 version: "3.8"
 
 services:
-  app:
+  backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile.prod
     ports:
-      - "3333:3333"
+      - "3333:3333" # Porta do backend
     environment:
-      DATABASE_URL: postgres://postgres:postgres@db:5432/node_api
+      DATABASE_URL:  ${DATABASE_URL}
       PORT: 3333
     depends_on:
       - db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    ports:
+      - "3000:3000" # Porta do frontend
+    environment:
+      NEXT_PUBLIC_API_URL: ${BACKEND_URL} # URL do backend
+    depends_on:
+      - backend
 
   db:
     image: postgres:15-alpine
@@ -21,7 +32,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: node_api
     ports:
-      - "5432:5432"
+      - "5433:5432" # Porta do banco de dados
     volumes:
       - postgres_data:/var/lib/postgresql/data
 

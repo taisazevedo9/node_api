@@ -17,8 +17,8 @@ app.register(fastifySwagger, {
   },
 });
 app.register(cors, {
-  origin: "http://localhost:3000", // Permite apenas o frontend acessar
-  methods: ["GET", "POST", "PUT", "DELETE"], // Métodos permitidos
+  origin: "*", // Permite apenas o frontend acessar
+  // methods: ["GET", "POST", "PUT", "DELETE"], // Métodos permitidos
 });
 app.register(fastifySwaggerUi, {
   routePrefix: "/docs",
