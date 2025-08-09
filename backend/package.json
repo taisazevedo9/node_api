@@ -7,7 +7,7 @@
   "scripts": {
     "test": "vitest",
     "start": "node dist/server.js",
-    "dev": "tsx watch src/server.ts",
+    "dev": "tsx --import ./src/server.ts",
     "build": "babel src --out-dir dist"
   },
   "keywords": [],
@@ -24,7 +24,6 @@
     "fastify-type-provider-zod": "^5.0.3",
     "postgres": "^3.4.7",
     "zod": "^4.0.15"
-
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",

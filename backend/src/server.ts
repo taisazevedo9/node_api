@@ -2,6 +2,7 @@ import Fastify from "fastify";
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 import { routes } from "./routes.js";
+import cors from "@fastify/cors";
 
 const app = Fastify();
 
@@ -15,7 +16,10 @@ app.register(fastifySwagger, {
     },
   },
 });
-
+app.register(cors, {
+  origin: "http://localhost:3000", // Permite apenas o frontend acessar
+  methods: ["GET", "POST", "PUT", "DELETE"], // Métodos permitidos
+});
 app.register(fastifySwaggerUi, {
   routePrefix: "/docs",
   staticCSP: true,

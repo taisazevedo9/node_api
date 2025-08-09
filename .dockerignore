@@ -1,7 +1,13 @@
-node_modules
+# Ignorar a pasta node_modules em qualquer lugar exceto na raiz
+**/node_modules
+!node_modules
+
+# Ignorar arquivos de build e outros desnecessários
 dist
+.next
 .env
 Dockerfile
 Dockerfile.prod
 docker-compose.yml
 docker-compose.prod.yml
+pnpm-lock.yaml
