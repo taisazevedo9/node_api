@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - "3333:3333" # Porta do backend
+    environment:
+      DATABASE_URL: ${DATABASE_URL} # URL do banco de dados
+      PORT: 3333
+    depends_on:
+      - db

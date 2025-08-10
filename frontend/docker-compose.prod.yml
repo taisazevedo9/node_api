@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - "3000:3000" # Porta do frontend
+    environment:
+      NEXT_PUBLIC_API_URL: ${BACKEND_URL} # URL pública do backend
+    depends_on:
+      - backend
