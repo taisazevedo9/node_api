@@ -1,6 +1,6 @@
-# 📚 Node API com Frontend Next.js e Docker
+# 📚 Node API com Frontend Next.js, Prisma e Docker
 
-Bem-vindo à **Node API**, uma aplicação desenvolvida para gerenciar usuários e compromissos, utilizando tecnologias modernas como **Fastify**, **TypeScript**, **Next.js**, e **PostgreSQL**. O projeto está totalmente containerizado com **Docker** para facilitar a execução e o desenvolvimento.
+Bem-vindo à Node API, uma aplicação desenvolvida para gerenciar usuários e compromissos, utilizando tecnologias modernas como Fastify, TypeScript, Next.js, Prisma e PostgreSQL. O projeto está totalmente containerizado com Docker para facilitar a execução e o desenvolvimento.
 
 ---
 
@@ -26,6 +26,7 @@ Bem-vindo à **Node API**, uma aplicação desenvolvida para gerenciar usuários
 - **Fastify**: Framework web rápido e eficiente.
 - **TypeScript**: Superset do JavaScript que adiciona tipagem estática.
 - **Next.js**: Framework React para o frontend.
+- **Prisma**: ORM para modelagem e interação com o banco de dados.
 - **PostgreSQL**: Banco de dados relacional utilizado para persistência.
 - **Docker**: Containerização para facilitar o desenvolvimento e a execução.
 - **Vitest**: Framework de testes para garantir a qualidade do código.
@@ -36,26 +37,44 @@ Bem-vindo à **Node API**, uma aplicação desenvolvida para gerenciar usuários
 ## 📂 Estrutura do Projeto
 
 ```plaintext
-src/
-├── database/
-│   ├── database-postgres.ts   # Implementação do banco de dados PostgreSQL
-│   ├── db.ts                  # Configuração da conexão com o banco
-│   └── dotenv/
-│       └── config.ts          # Configuração do dotenv
-├── entities/
-│   └── appointment.ts         # Entidade de Compromisso
-├── repositories/
-│   ├── appointments-repository.ts       # Interface do repositório de compromissos
-│   └── in-memory/
-│       └── in-memory-appointments-repository.ts # Repositório em memória
-├── services/
-│   ├── create-appointment.ts  # Serviço para criação de compromissos
-│   └── create-appointment.spec.ts # Testes do serviço de criação de compromissos
-├── tests/
-│   └── utils/
-│       └── get-future-date.ts # Função utilitária para manipulação de datas
-├── routes.ts                  # Rotas da aplicação
-└── server.ts                  # Configuração do servidor Fastify
+node_api/
+├── backend/                     # Backend (API)
+│   ├── prisma/                  # Arquivos do Prisma
+│   │   ├── migrations/          # Histórico de migrações
+│   │   └── schema.prisma        # Definição do esquema do banco de dados
+│   ├── src/                     # Código-fonte do backend
+│   │   ├── routes/              # Rotas da API
+│   │   │   ├── users.routes.ts  # Rotas relacionadas a usuários
+│   │   │   ├── appointments.routes.ts # Rotas relacionadas a compromissos
+│   │   │   └── index.ts         # Registro central de rotas
+│   │   ├── database/            # Configuração do banco de dados
+│   │   │   └── database-postgres.ts # Classe para interagir com o banco
+│   │   ├── server.ts            # Inicialização do servidor Fastify
+│   │   └── types.ts             # Tipos personalizados
+│   ├── Dockerfile               # Dockerfile para o backend
+│   ├── package.json             # Dependências e scripts do backend
+│   ├── pnpm-lock.yaml           # Arquivo de lock do PNPM
+│   └── tsconfig.json            # Configuração do TypeScript
+├── frontend/                    # Frontend (Next.js)
+│   ├── public/                  # Arquivos estáticos
+│   ├── src/                     # Código-fonte do frontend
+│   │   ├── app/                 # Estrutura de rotas do Next.js
+│   │   │   ├── users/           # Página de usuários
+│   │   │   ├── appointments/    # Página de compromissos
+│   │   │   └── index.tsx        # Página inicial
+│   │   ├── components/          # Componentes reutilizáveis
+│   │   └── styles/              # Estilos globais
+│   ├── Dockerfile               # Dockerfile para o frontend
+│   ├── package.json             # Dependências e scripts do frontend
+│   ├── pnpm-lock.yaml           # Arquivo de lock do PNPM
+│   └── tsconfig.json            # Configuração do TypeScript
+├── database/                    # Configuração do banco de dados
+│   ├── docker-compose.prod.yml  # Configuração do banco em produção
+│   └── init.sql                 # Script de inicialização do banco
+├── docker-compose.yml           # Orquestração dos serviços em desenvolvimento
+├── docker-compose.prod.yml      # Orquestração dos serviços em produção
+├── README.md                    # Documentação do projeto
+└── .env                         # Variáveis de ambiente
 ```
 
 ---
@@ -78,20 +97,6 @@ O projeto utiliza **Docker Compose** para orquestrar os serviços do backend, fr
    git clone https://github.com/seu-usuario/seu-repositorio.git
    cd node_api
    ```
-
-2. **Suba os containers com Docker Compose:**
-   ```bash
-   cd backend
-   docker-compose up --build
-   ```
-   Aqui está uma versão atualizada do seu
-
-README.md
-
-, levando em consideração as mudanças feitas no projeto, como a integração do frontend com Next.js, a configuração com Docker e a listagem de usuários:
-
----
-
 
 2. **Suba os containers com Docker Compose:**
 
@@ -204,7 +209,5 @@ Este projeto está sob a licença **MIT**. Sinta-se à vontade para usá-lo e mo
 
 Se você tiver dúvidas ou sugestões, entre em contato:
 
-- **Email:** seu-email@exemplo.com
-- **GitHub:** [seu-usuario](https://github.com/seu-usuario)
-
-```
+- **Email:** taisazevedo9@gmail.com
+- **GitHub:** [taisazevedo9](https://github.com/taisazevedo9)
