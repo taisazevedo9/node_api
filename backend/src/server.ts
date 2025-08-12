@@ -1,7 +1,7 @@
 import Fastify from "fastify";
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
-import { routes } from "./routes.js";
+import { registerRoutes } from "./routes.js";
 import cors from "@fastify/cors";
 
 const app = Fastify();
@@ -27,7 +27,7 @@ app.register(fastifySwaggerUi, {
 });
 
 // Registre as rotas da aplicação
-app.register(routes);
+app.register(registerRoutes);
 
 // Inicialização do servidor
 app.listen(

@@ -1,0 +1,32 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+model User {
+  id       String  @id @default(uuid()) // ID gerado automaticamente como UUID
+  name     String  // Nome do usuário
+  email    String  @unique // Email único
+  password String  // Senha do usuário
+  age      Int?    // Idade do usuário (opcional)
+  is_admin Boolean @default(false) // Indica se o usuário é administrador
+
+  // Relacionamento com Appointment
+  appointments Appointment[]
+}
+
+model Appointment {
+  id        String   @id @default(uuid()) // ID gerado automaticamente como UUID
+  customer  String   // Nome ou identificador do cliente
+  startsAt  DateTime // Data e hora de início do compromisso
+  endsAt    DateTime // Data e hora de término do compromisso
+
+  // Relacionamento com User
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+}
