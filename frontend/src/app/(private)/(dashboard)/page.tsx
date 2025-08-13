@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { useEffect, useState } from "react";
+import HighChartComponent from "./produtos/components/HighChartComponent";
 
 export default function Dashboard() {
   const [users, setUsers] = useState<{ id: number; name: string }[]>([]);
@@ -20,12 +21,13 @@ export default function Dashboard() {
   }, []);
   return (
     <>
-      <h1>Dashboard 65656</h1>
+      <h1>Dashboard</h1>
       <ul>
         {users?.map((user) => (
           <li key={user.id}>{user.name}</li>
         ))}
       </ul>
+      <HighChartComponent />
     </>
   );
 }

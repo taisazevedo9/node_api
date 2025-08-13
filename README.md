@@ -180,6 +180,27 @@ cd frontend
 
 ---
 
+---
+
+## 📊 Fluxo da Aplicação
+
+Abaixo está um diagrama representando o fluxo mais importante da aplicação, desde a autenticação até o acesso às rotas protegidas.
+
+```mermaid
+graph TD
+    Start[Início] -->|Usuário acessa a aplicação| AuthCheck[Verificar Autenticação]
+    AuthCheck -->|Token Inválido ou Ausente| RedirectLogin[Redirecionar para Login]
+    AuthCheck -->|Token Válido| AccessProtected[Permitir Acesso às Rotas Protegidas]
+    AccessProtected -->|Acessar Produtos| Produtos[Carregar Página de Produtos]
+    AccessProtected -->|Acessar Usuários| Usuarios[Carregar Página de Usuários]
+    Produtos --> API[Requisição à API /produtos]
+    Usuarios --> API[Requisição à API /users]
+    API --> DB[(Banco de Dados)]
+    DB --> API
+    API --> Produtos
+    API --> Usuarios
+```
+
 ## 🐛 Solução de Problemas
 
 ### Container do backend caindo

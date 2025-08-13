@@ -38,7 +38,7 @@ export function middleware(request: NextRequest) {
     publicRoute.whenAuthenticated === "redirect"
   ) {
     redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/";
+    redirectUrl.pathname = "/produtos";
     return NextResponse.redirect(redirectUrl!);
   }
   if (authToken && !publicRoute) {
