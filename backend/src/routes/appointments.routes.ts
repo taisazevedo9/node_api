@@ -1,160 +1,121 @@
-import { CustomFastifyInstance } from "../types.js";
-import { z } from "zod";
-import { DatabasePostgres } from "../database/database-postgres.js";
+import { AppointmentController } from "../controllers/appointment.controller.js";
+import { checkRequestJWT } from "./hooks/check-request-jwt.js";
 
-const database = new DatabasePostgres();
+const appointmentController = new AppointmentController();
 
-export async function appointmentRoutes(app: CustomFastifyInstance) {
+export async function appointmentRoutes(app: any) {
   app.get(
     "/appointments",
     {
+      preHandler: [checkRequestJWT],
       schema: {
-        description: "Get all Appointments",
-        tags: ["Appointments"], // Tag for categorizing the route in Swagger UI
-        summary: "List Appointments", // Summary of the route
-        response: {
-          200: z.array(
-            z.object({
-              id: z.string(), // Unique identifier for the user
-              name: z.string(), // Name of the user
-              email: z.string(), // Email of the user
-              age: z.number().int().optional(), // Age of the user, optional
-              isAdmin: z.boolean().default(false), // Admin status of the user, defaults to false
-            })
-          ),
+        description: "Get all Appointment",
+        tags: ["Appointment"],
+        summary: "Get all Appointment",
+        querystring: {
+          type: "object",
+          properties: {
+            userId: {
+              type: "string",
+              description: "ID do usuário relacionado",
+            },
+            customer: {
+              type: "string",
+              description: "Nome ou identificador do cliente",
+            },
+            startsAt: {
+              type: "string",
+              format: "date-time",
+              description: "Data/hora inicial do filtro",
+            },
+            endsAt: {
+              type: "string",
+              format: "date-time",
+              description: "Data/hora final do filtro",
+            },
+          },
         },
       },
     },
-    async (request, reply) => {
-      const users = await database.list();
-      // Ajuste para garantir que age/isAdmin estejam sempre definidos
-      return users.map((u: any) => ({
-        ...u,
-        age: u.age ?? null,
-        isAdmin: u.isadmin ?? false, // pode vir como isadmin do banco
-      }));
-    }
+    appointmentController.get.bind(appointmentController)
   );
   app.post(
     "/appointments",
     {
+      preHandler: [checkRequestJWT],
       schema: {
-        description: "Create a new Appointments",
-        tags: ["Appointments"], // Tag for categorizing the route in Swagger UI
-        summary: "Create Appointments", // Summary of the route
+        description: "Create a new Appointment",
+        tags: ["Appointment"],
+        summary: "Create Appointment",
         body: {
           type: "object",
-          required: ["name", "email", "password"], // Deve ser um array
           properties: {
-            name: { type: "string" }, // Name of the user
-            email: { type: "string", format: "email" }, // Email of the user
-            password: { type: "string", minLength: 6 }, // Password of the user, minimum length of 6 characters
-            age: { type: "integer", minimum: 0 }, // Age of the user, optional
-            isAdmin: { type: "boolean", default: false }, // Admin status of the user, defaults to false
+            customer: { type: "string" }, // Nome ou identificador do cliente
+            startsAt: { type: "string", format: "date-time" }, // Data e hora de início
+            endsAt: { type: "string", format: "date-time" }, // Data e hora de término
+            userId: { type: "string" }, // ID do usuário relacionado
           },
         },
         response: {
           201: {
             type: "object",
             properties: {
-              message: { type: "string" }, // Response message when user is created successfully
-              id: { type: "string" }, // ID of the created user
+              customer: { type: "string" }, // Nome ou identificador do cliente
+              startsAt: { type: "string", format: "date-time" }, // Data e hora de início
+              endsAt: { type: "string", format: "date-time" }, // Data e hora de término
+              userId: { type: "string" }, // ID do usuário relacionado
             },
           },
         },
       },
     },
-    async (request, reply) => {
-      const usuario = request.body;
-
-      // Criação do usuário no banco de dados
-      const usuarioId = await database.create(usuario);
-
-      // Retorna a resposta de sucesso
-      return reply.status(201).send({
-        message: "Appointments created successfully",
-        id: usuarioId,
-      });
-    }
+    appointmentController.create.bind(appointmentController)
   );
   app.put(
     "/appointments/:id",
     {
+      preHandler: [checkRequestJWT],
       schema: {
-        description: "Create a new Appointments",
-        tags: ["Appointments"], // Tag for categorizing the route in Swagger UI
-        summary: "Create Appointments", // Summary of the route
-        body: {
+        description: "Update an existing Appointment",
+        tags: ["Appointment"],
+        summary: "Update Appointment",
+        params: {
           type: "object",
-          required: ["name", "email", "password"], // Deve ser um array
+          required: ["id"],
           properties: {
-            name: { type: "string" }, // Name of the user
-            email: { type: "string", format: "email" }, // Email of the user
-            password: { type: "string", minLength: 6 }, // Password of the user, minimum length of 6 characters
-            age: { type: "integer", minimum: 0 }, // Age of the user, optional
-            isAdmin: { type: "boolean", default: false }, // Admin status of the user, defaults to false
+            id: { type: "string" },
           },
         },
-        response: {
-          201: {
-            type: "object",
-            properties: {
-              message: { type: "string" }, // Response message when user is created successfully
-              id: { type: "string" }, // ID of the created user
-            },
+        body: {
+          type: "object",
+          properties: {
+            customer: { type: "string" },
+            startsAt: { type: "string", format: "date-time" },
+            endsAt: { type: "string", format: "date-time" },
+            userId: { type: "string" },
           },
         },
       },
     },
-    async (request, reply) => {
-      const usuario = request.body;
-      const { id } = request.params as { id: string };
-
-      // Criação do usuário no banco de dados
-      const usuarioId = await database.update(id, usuario);
-
-      // Retorna a resposta de sucesso
-      return reply.status(201).send({
-        message: "Appointments created successfully",
-        id: usuarioId,
-      });
-    }
+    appointmentController.update.bind(appointmentController)
   );
-
   app.delete(
     "/appointments/:id",
     {
+      preHandler: [checkRequestJWT],
       schema: {
-        description: "Delete a user by ID",
-        tags: ["Appointments"], // Tag for categorizing the route in Swagger UI
-        summary: "Delete Appointments", // Summary of the route
+        description: "Delete an existing Appointment",
+        tags: ["Appointment"],
+        summary: "Delete Appointment",
         params: {
           type: "object",
-          required: ["id"], // ID is required
+          required: ["id"],
           properties: {
-            id: { type: "string" }, // ID of the user to delete
-          },
-        },
-        response: {
-          200: {
-            type: "object",
-            properties: {
-              message: { type: "string" }, // Response message when user is deleted successfully
-            },
+            id: { type: "string" },
           },
         },
       },
     },
-    async (request, reply) => {
-      const { id } = request.params as { id: string };
-
-      // Deletion of the user in the database
-      await database.delete(id);
-
-      // Return success response
-      return reply.status(200).send({
-        message: "User deleted successfully",
-      });
-    }
+    appointmentController.delete.bind(appointmentController)
   );
 }

@@ -14,6 +14,15 @@ app.register(fastifySwagger, {
       description: "Documentação da API",
       version: "1.0.0",
     },
+    securityDefinitions: {
+      bearerAuth: {
+        type: "apiKey",
+        name: "Authorization",
+        in: "header",
+        description: "Insira o token JWT no formato: Bearer <token>",
+      },
+    },
+    security: [{ bearerAuth: [] }],
   },
 });
 app.register(cors, {
@@ -33,7 +42,7 @@ app.register(registerRoutes);
 app.listen(
   {
     host: "0.0.0.0",
-    port: Number(process.env.PORT) || 3333,
+    port: Number(process.env.PORT) || 3334,
   },
   (err, address) => {
     if (err) {

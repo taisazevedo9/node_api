@@ -1,36 +1,40 @@
-# 📚 Node API com Frontend Next.js, Prisma e Docker
+# 📚 Node API com Frontend Next.js, Prisma, Docker e Testes
 
-Bem-vindo à Node API, uma aplicação desenvolvida para gerenciar usuários e compromissos, utilizando tecnologias modernas como Fastify, TypeScript, Next.js, Prisma e PostgreSQL. O projeto está totalmente containerizado com Docker para facilitar a execução e o desenvolvimento.
+Bem-vindo à Node API! Este projeto gerencia usuários e compromissos, usando Fastify, TypeScript, Next.js, Prisma, PostgreSQL e Vitest. O backend e frontend são totalmente containerizados com Docker para facilitar o desenvolvimento e a execução.
 
 ---
 
 ## 🚀 Funcionalidades
 
-### 🧑‍💻 Gerenciamento de Usuários
+### 🧑‍💻 Usuários
 
-- **Listar usuários**: Obtenha uma lista de todos os usuários cadastrados.
-- **Criar usuário**: Adicione novos usuários com informações como nome, e-mail, senha, idade e status de administrador.
-- **Atualizar usuário**: Edite informações de um usuário existente.
-- **Deletar usuário**: Remova usuários do sistema.
+- **Listar usuários**: Retorna todos os usuários cadastrados.
+- **Criar usuário**: Adiciona novos usuários com nome, e-mail, senha, idade e status de administrador.
+- **Atualizar usuário**: Edita informações de um usuário existente.
+- **Deletar usuário**: Remove usuários do sistema.
+- **Autenticação JWT**: Login protegido e rotas seguras via token.
 
-### 📅 Gerenciamento de Compromissos
+### 📅 Compromissos
 
-- **Criar compromissos**: Agende compromissos com validação de sobreposição de datas.
-- **Validação de datas**: Garante que a data de início seja no futuro e que a data de término seja posterior à data de início.
+- **Criar compromissos**: Agenda compromissos vinculados a usuários.
+- **Validação de datas**: Garante que o início seja no futuro e o término após o início.
+- **Filtro por usuário/data**: Listagem filtrada por usuário, cliente ou intervalo de datas.
+- **Validação de sobreposição**: Não permite compromissos sobrepostos para o mesmo usuário.
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## 🛠️ Tecnologias
 
-- **Node.js**: Plataforma para execução do JavaScript no servidor.
-- **Fastify**: Framework web rápido e eficiente.
-- **TypeScript**: Superset do JavaScript que adiciona tipagem estática.
-- **Next.js**: Framework React para o frontend.
-- **Prisma**: ORM para modelagem e interação com o banco de dados.
-- **PostgreSQL**: Banco de dados relacional utilizado para persistência.
-- **Docker**: Containerização para facilitar o desenvolvimento e a execução.
-- **Vitest**: Framework de testes para garantir a qualidade do código.
-- **dotenv**: Gerenciamento de variáveis de ambiente.
+- **Node.js** e **Fastify**
+- **TypeScript**
+- **Next.js** (Frontend)
+- **Prisma** (ORM)
+- **PostgreSQL**
+- **Docker** e **Docker Compose**
+- **Vitest** (Testes)
+- **@faker-js/faker** (Dados fake para testes)
+- **dotenv** (Variáveis de ambiente)
+- **Supertest** (Testes de rotas)
 
 ---
 
@@ -38,197 +42,159 @@ Bem-vindo à Node API, uma aplicação desenvolvida para gerenciar usuários e c
 
 ```plaintext
 node_api/
-├── backend/                     # Backend (API)
-│   ├── prisma/                  # Arquivos do Prisma
-│   │   ├── migrations/          # Histórico de migrações
-│   │   └── schema.prisma        # Definição do esquema do banco de dados
-│   ├── src/                     # Código-fonte do backend
-│   │   ├── routes/              # Rotas da API
-│   │   │   ├── users.routes.ts  # Rotas relacionadas a usuários
-│   │   │   ├── appointments.routes.ts # Rotas relacionadas a compromissos
-│   │   │   └── index.ts         # Registro central de rotas
-│   │   ├── database/            # Configuração do banco de dados
-│   │   │   └── database-postgres.ts # Classe para interagir com o banco
-│   │   ├── server.ts            # Inicialização do servidor Fastify
-│   │   └── types.ts             # Tipos personalizados
-│   ├── Dockerfile               # Dockerfile para o backend
-│   ├── package.json             # Dependências e scripts do backend
-│   ├── pnpm-lock.yaml           # Arquivo de lock do PNPM
-│   └── tsconfig.json            # Configuração do TypeScript
-├── frontend/                    # Frontend (Next.js)
-│   ├── public/                  # Arquivos estáticos
-│   ├── src/                     # Código-fonte do frontend
-│   │   ├── app/                 # Estrutura de rotas do Next.js
-│   │   │   ├── users/           # Página de usuários
-│   │   │   ├── appointments/    # Página de compromissos
-│   │   │   └── index.tsx        # Página inicial
-│   │   ├── components/          # Componentes reutilizáveis
-│   │   └── styles/              # Estilos globais
-│   ├── Dockerfile               # Dockerfile para o frontend
-│   ├── package.json             # Dependências e scripts do frontend
-│   ├── pnpm-lock.yaml           # Arquivo de lock do PNPM
-│   └── tsconfig.json            # Configuração do TypeScript
-├── database/                    # Configuração do banco de dados
-│   ├── docker-compose.prod.yml  # Configuração do banco em produção
-│   └── init.sql                 # Script de inicialização do banco
-├── docker-compose.yml           # Orquestração dos serviços em desenvolvimento
-├── docker-compose.prod.yml      # Orquestração dos serviços em produção
-├── README.md                    # Documentação do projeto
-└── .env                         # Variáveis de ambiente
+├── backend/
+│   ├── prisma/
+│   │   ├── migrations/
+│   │   └── schema.prisma
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   ├── schemas/
+│   │   ├── entities/
+│   │   ├── tests/
+│   │   │   └── factories/
+│   │   ├── server.ts
+│   │   └── types.ts
+│   ├── Dockerfile
+│   ├── package.json
+│   └── tsconfig.json
+├── frontend/
+│   ├── src/
+│   │   ├── app/
+│   │   ├── components/
+│   │   └── styles/
+│   ├── Dockerfile
+│   ├── package.json
+│   └── tsconfig.json
+├── database/
+│   ├── docker-compose.prod.yml
+│   └── init.sql
+├── docker-compose.yml
+├── .env
+└── README.md
 ```
 
 ---
 
-## 🐳 Configuração com Docker
+## 🐳 Docker
 
-O projeto utiliza **Docker Compose** para orquestrar os serviços do backend, frontend e banco de dados.
+O projeto usa **Docker Compose** para orquestrar backend, frontend e banco de dados.
 
-### Serviços configurados:
+- **Backend:** Fastify na porta `3333`
+- **Frontend:** Next.js na porta `3000`
+- **PostgreSQL:** Porta `5433`
 
-- **Backend**: API desenvolvida com Node.js e Fastify, rodando na porta `3333`.
-- **Frontend**: Aplicação Next.js para consumir a API, rodando na porta `3000`.
-- **PostgreSQL**: Banco de dados relacional, rodando na porta `5433`.
+**Como rodar:**
 
-### Como rodar o projeto com Docker:
-
-1. **Clone o repositório:**
-
-   ```bash
-   git clone https://github.com/seu-usuario/seu-repositorio.git
-   cd node_api
-   ```
-
-2. **Suba os containers com Docker Compose:**
-
-   ```bash
-   docker-compose up --build
-   ```
-
-3. **Acesse os serviços:**
-   - **Backend:** `http://localhost:3333`
-   - **Frontend:** `http://localhost:3000`
-
----
-
-## 🗂️ Endpoints da API
-
-### **GET /users**
-
-Retorna uma lista de usuários.
-
-**Exemplo de resposta:**
-
-```json
-[
-  { "id": 1, "name": "User1" },
-  { "id": 2, "name": "User2" }
-]
+```bash
+git clone https://github.com/seu-usuario/seu-repositorio.git
+cd node_api
+docker-compose up --build
 ```
 
+Acesse:
+
+- Backend: [http://localhost:3333](http://localhost:3333)
+- Frontend: [http://localhost:3000](http://localhost:3000)
+
 ---
 
-## 🖥️ Funcionalidades do Frontend
+## 🗂️ Endpoints Principais
 
-- Exibe uma lista de usuários consumida do backend.
-- Página de dashboard acessível em `http://localhost:3000`.
+### **Usuários**
+
+- `GET /users` — Lista usuários
+- `POST /users` — Cria usuário
+- `PUT /users/:id` — Atualiza usuário
+- `DELETE /users/:id` — Remove usuário
+- `POST /login` — Autenticação JWT
+
+### **Compromissos**
+
+- `GET /appointments` — Lista compromissos (filtros: userId, customer, startsAt, endsAt)
+- `POST /appointments` — Cria compromisso
+- `PUT /appointments/:id` — Atualiza compromisso
+- `DELETE /appointments/:id` — Remove compromisso
+
+---
+
+## 🖥️ Frontend
+
+- Lista usuários e compromissos consumindo a API.
+- Dashboard acessível em [http://localhost:3000](http://localhost:3000).
+
+---
+
+## 🧪 Testes
+
+- Testes unitários e de integração com **Vitest** e **Supertest**.
+- Dados fake gerados com **@faker-js/faker**.
+- Para rodar os testes:
+  ```bash
+  pnpm test
+  ```
+- Para abrir o relatório de cobertura:
+  ```bash
+  xdg-open ./coverage/index.html
+  ```
 
 ---
 
 ## 🛠️ Desenvolvimento Local
 
-### Rodar o backend localmente
-
-1. Entre na pasta
-
-backend
-
-:
+**Backend:**
 
 ```bash
 cd backend
+pnpm install
+pnpm dev
 ```
 
-2. Instale as dependências:
-   ```bash
-   pnpm install
-   ```
-3. Inicie o servidor:
-   ```bash
-   pnpm dev
-   ```
-
-### Rodar o frontend localmente
-
-1. Entre na pasta
-
-frontend
-
-:
+**Frontend:**
 
 ```bash
 cd frontend
+pnpm install
+pnpm dev
 ```
-
-2. Instale as dependências:
-   ```bash
-   pnpm install
-   ```
-3. Inicie o servidor:
-   ```bash
-   pnpm dev
-   ```
-
----
 
 ---
 
 ## 📊 Fluxo da Aplicação
 
-Abaixo está um diagrama representando o fluxo mais importante da aplicação, desde a autenticação até o acesso às rotas protegidas.
-
 ```mermaid
 graph TD
-    Start[Início] -->|Usuário acessa a aplicação| AuthCheck[Verificar Autenticação]
-    AuthCheck -->|Token Inválido ou Ausente| RedirectLogin[Redirecionar para Login]
-    AuthCheck -->|Token Válido| AccessProtected[Permitir Acesso às Rotas Protegidas]
-    AccessProtected -->|Acessar Produtos| Produtos[Carregar Página de Produtos]
-    AccessProtected -->|Acessar Usuários| Usuarios[Carregar Página de Usuários]
-    Produtos --> API[Requisição à API /produtos]
-    Usuarios --> API[Requisição à API /users]
+    Start[Início] -->|Usuário acessa| AuthCheck[Verificar Autenticação]
+    AuthCheck -->|Token Inválido| RedirectLogin[Redirecionar para Login]
+    AuthCheck -->|Token Válido| AccessProtected[Rotas Protegidas]
+    AccessProtected --> Usuarios[Usuários]
+    AccessProtected --> Compromissos[Compromissos]
+    Usuarios --> API[API /users]
+    Compromissos --> API[API /appointments]
     API --> DB[(Banco de Dados)]
-    DB --> API
-    API --> Produtos
-    API --> Usuarios
 ```
+
+---
 
 ## 🐛 Solução de Problemas
 
-### Container do backend caindo
-
-- Verifique os logs do container:
-  ```bash
-  docker logs node_api-backend-1
-  ```
-- Certifique-se de que o banco de dados está rodando corretamente.
-
-### Erro de CORS
-
-- Certifique-se de que o CORS está configurado no backend:
+- **Porta em uso:** Encerre processos com `lsof -i :3333` e `kill -9 <PID>`
+- **Erro de CORS:** Configure o backend:
   ```typescript
   app.register(cors, { origin: "http://localhost:3000" });
   ```
+- **Banco não conecta:** Verifique se o container do PostgreSQL está rodando.
 
 ---
 
 ## 📜 Licença
 
-Este projeto está sob a licença **MIT**. Sinta-se à vontade para usá-lo e modificá-lo.
+MIT
 
 ---
 
 ## 📞 Contato
-
-Se você tiver dúvidas ou sugestões, entre em contato:
 
 - **Email:** taisazevedo9@gmail.com
 - **GitHub:** [taisazevedo9](https://github.com/taisazevedo9)

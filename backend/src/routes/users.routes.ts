@@ -1,8 +1,15 @@
 import { CustomFastifyInstance } from "../types.js";
 import { z } from "zod";
 import { PrismaClient } from "@prisma/client";
+import { createUserSchema } from "../schemas/users.schema.js";
+import { UsersController } from "../controllers/users.controller.js";
+import { zodToJsonSchema } from "zod-to-json-schema";
+import { checkRequestJWT } from "./hooks/check-request-jwt.js";
+import { UserServices } from "../services/users.service.js";
 
 const prisma = new PrismaClient();
+const usersController = new UsersController(UserServices);
+
 interface CreateUserRequest {
   name: string;
   email: string;
@@ -14,6 +21,7 @@ export async function userRoutes(app: CustomFastifyInstance) {
   app.get(
     "/users",
     {
+      preHandler: [checkRequestJWT],
       schema: {
         description: "Get all users",
         tags: ["Users"], // Tag for categorizing the route in Swagger UI
@@ -31,26 +39,19 @@ export async function userRoutes(app: CustomFastifyInstance) {
         },
       },
     },
-    async (request, reply) => {
-      const users = await prisma.user.findMany();
-      // Ajuste para garantir que age/isAdmin estejam sempre definidos
-      return users.map((u: any) => ({
-        ...u,
-        age: u.age ?? null,
-        isAdmin: u.isadmin ?? false, // pode vir como isadmin do banco
-      }));
-    }
+    usersController.get.bind(usersController)
   );
   app.post(
     "/users",
     {
+      preHandler: [checkRequestJWT],
       schema: {
         description: "Create a new user",
-        tags: ["Users"], // Tag for categorizing the route in Swagger UI
-        summary: "Create User", // Summary of the route
+        tags: ["Users"],
+        summary: "Create User",
         body: {
           type: "object",
-          required: ["name", "email", "password"], // Deve ser um array
+          required: ["name"], // Deve ser um array
           properties: {
             name: { type: "string" }, // Name of the user
             email: { type: "string", format: "email" }, // Email of the user
@@ -63,44 +64,29 @@ export async function userRoutes(app: CustomFastifyInstance) {
           201: {
             type: "object",
             properties: {
-              message: { type: "string" }, // Response message when user is created successfully
-              id: { type: "string" }, // ID of the created user
+              name: { type: "string", example: "name" },
+              email: { type: "string", example: "name@email.com" },
+              age: { type: "integer", example: 25 },
+              isAdmin: { type: "boolean", example: false },
+              message: { type: "string", example: "User created successfully" },
             },
           },
         },
       },
     },
-    async (request, reply) => {
-      const { name, email, password, age, isAdmin } =
-        request.body as CreateUserRequest;
-      // Criação do usuário no banco de dados
-      const usuarioId = await prisma.user.create({
-        data: {
-          name,
-          email,
-          password, // Em produção, você deve hash a senha antes de salvar
-          age,
-          is_admin: isAdmin ?? false,
-        },
-      });
-
-      // Retorna a resposta de sucesso
-      return reply.status(201).send({
-        message: "User created successfully",
-        id: usuarioId,
-      });
-    }
+    usersController.create.bind(usersController)
   );
   app.put(
     "/users/:id",
     {
+      preHandler: [checkRequestJWT],
       schema: {
         description: "Create a new user",
         tags: ["Users"], // Tag for categorizing the route in Swagger UI
         summary: "Create User", // Summary of the route
         body: {
           type: "object",
-          required: ["name", "email", "password"], // Deve ser um array
+          required: ["name"], // Deve ser um array
           properties: {
             name: { type: "string" }, // Name of the user
             email: { type: "string", format: "email" }, // Email of the user
@@ -117,36 +103,21 @@ export async function userRoutes(app: CustomFastifyInstance) {
               id: { type: "string" }, // ID of the created user
             },
           },
+          409: {
+            type: "object",
+            properties: {
+              error: { type: "string", example: "Email already in use" },
+            },
+          },
         },
       },
     },
-    async (request, reply) => {
-      const { id } = request.params as { id: string };
-      const { name, email, password, age, isAdmin } =
-        request.body as CreateUserRequest;
-
-      // Criação do usuário no banco de dados
-      const usuarioId = await prisma.user.update({
-        where: { id },
-        data: {
-          name,
-          email,
-          password, // Em produção, você deve hash a senha antes de salvar
-          age,
-          is_admin: isAdmin,
-        },
-      });
-
-      // Retorna a resposta de sucesso
-      return reply.status(201).send({
-        message: "User created successfully",
-        id: usuarioId,
-      });
-    }
+    usersController.update.bind(usersController)
   );
   app.delete(
     "/users/:id",
     {
+      preHandler: [checkRequestJWT],
       schema: {
         description: "Delete a user by ID",
         tags: ["Users"], // Tag for categorizing the route in Swagger UI
